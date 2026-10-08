@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Sampurni Tea — Premium Indian Teas</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --cream:#faf7f2;--brown:#2c1810;--gold:#c8902a;--gold-light:#e8b84b;
+  --green:#2d5a27;--border:#e8e0d4;--text:#1a1208;--muted:#8a7560;
+  --card:#fff;--red:#c0392b;
+}
+body{background:var(--cream);color:var(--text);font-family:'DM Sans',sans-serif;min-height:100vh;}
+
+/* NAV */
+nav{background:var(--brown);padding:0 3rem;height:68px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;}
+.nav-brand{font-family:'Playfair Display',serif;font-size:1.4rem;color:#fff;letter-spacing:0.02em;text-decoration:none;}
+.nav-brand span{color:var(--gold-light);}
+.nav-links{display:flex;align-items:center;gap:2rem;}
+.nav-links a{color:rgba(255,255,255,0.75);text-decoration:none;font-size:0.85rem;font-weight:500;transition:color 0.2s;}
+.nav-links a:hover{color:#fff;}
+.cart-link{display:flex;align-items:center;gap:0.4rem;background:var(--gold);color:var(--brown)!important;padding:0.45rem 1rem;border-radius:6px;font-weight:600!important;}
+.cart-badge{background:var(--brown);color:#fff;border-radius:50%;width:18px;height:18px;font-size:0.65rem;display:flex;align-items:center;justify-content:center;font-weight:700;}
+
+/* HERO */
+.hero{background:linear-gradient(135deg,var(--brown) 0%,#4a2c1a 50%,#1a0f08 100%);padding:5rem 3rem;display:grid;grid-template-columns:1fr 1fr;gap:3rem;align-items:center;overflow:hidden;position:relative;}
+.hero::before{content:'';position:absolute;inset:0;background:url('https://images.unsplash.com/photo-1556679343-c7306c1976bc?w=1200&q=60') center/cover no-repeat;opacity:0.12;}
+.hero-content{position:relative;z-index:1;}
+.hero-tag{display:inline-block;background:var(--gold);color:var(--brown);font-size:0.72rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;padding:0.3rem 0.75rem;border-radius:4px;margin-bottom:1.25rem;}
+.hero h1{font-family:'Playfair Display',serif;font-size:3.2rem;color:#fff;line-height:1.15;margin-bottom:1rem;}
+.hero h1 em{color:var(--gold-light);font-style:italic;}
+.hero p{color:rgba(255,255,255,0.7);font-size:1rem;line-height:1.7;margin-bottom:2rem;max-width:440px;}
+.hero-btns{display:flex;gap:1rem;flex-wrap:wrap;}
+.btn-primary{background:var(--gold);color:var(--brown);padding:0.75rem 1.75rem;border-radius:8px;font-weight:700;font-size:0.9rem;text-decoration:none;transition:all 0.2s;}
+.btn-primary:hover{background:var(--gold-light);}
+.btn-outline{border:1px solid rgba(255,255,255,0.4);color:#fff;padding:0.75rem 1.75rem;border-radius:8px;font-weight:500;font-size:0.9rem;text-decoration:none;transition:all 0.2s;}
+.btn-outline:hover{border-color:#fff;background:rgba(255,255,255,0.05);}
+.hero-img{position:relative;z-index:1;text-align:center;}
+.hero-img img{width:100%;max-width:440px;border-radius:16px;box-shadow:0 32px 64px rgba(0,0,0,0.5);}
+
+/* TRUST BAR */
+.trust-bar{background:#fff;border-bottom:1px solid var(--border);padding:0.85rem 3rem;display:flex;justify-content:center;gap:3rem;flex-wrap:wrap;}
+.trust-item{display:flex;align-items:center;gap:0.5rem;font-size:0.8rem;color:var(--muted);font-weight:500;}
+.trust-item span:first-child{font-size:1rem;}
+
+/* SECTION */
+.section{padding:4rem 3rem;}
+.section-header{margin-bottom:2.5rem;}
+.section-tag{font-size:0.72rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--gold);margin-bottom:0.5rem;}
+.section-title{font-family:'Playfair Display',serif;font-size:2rem;color:var(--brown);}
+
+/* PRODUCT GRID */
+.product-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:1.5rem;}
+
+.product-card{background:var(--card);border:1px solid var(--border);border-radius:14px;overflow:hidden;transition:transform 0.2s,box-shadow 0.2s;cursor:pointer;text-decoration:none;color:inherit;display:block;}
+.product-card:hover{transform:translateY(-4px);box-shadow:0 16px 40px rgba(44,24,16,0.12);}
+.product-card-img{height:220px;overflow:hidden;position:relative;}
+.product-card-img img{width:100%;height:100%;object-fit:cover;transition:transform 0.4s;}
+.product-card:hover .product-card-img img{transform:scale(1.05);}
+.product-tag{position:absolute;top:12px;left:12px;background:var(--brown);color:#fff;font-size:0.65rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;padding:0.25rem 0.6rem;border-radius:4px;}
+.product-tag.gold{background:var(--gold);color:var(--brown);}
+.product-tag.green{background:var(--green);color:#fff;}
+.product-card-body{padding:1.25rem;}
+.product-name{font-family:'Playfair Display',serif;font-size:1.05rem;font-weight:600;margin-bottom:0.2rem;}
+.product-subtitle{font-size:0.75rem;color:var(--muted);margin-bottom:0.75rem;}
+.product-rating{display:flex;align-items:center;gap:0.4rem;margin-bottom:0.75rem;}
+.stars{color:var(--gold);font-size:0.8rem;letter-spacing:1px;}
+.rating-count{font-size:0.72rem;color:var(--muted);}
+.product-footer{display:flex;align-items:center;justify-content:space-between;margin-top:0.75rem;padding-top:0.75rem;border-top:1px solid var(--border);}
+.product-price{font-size:1.15rem;font-weight:700;color:var(--brown);}
+.product-weight{font-size:0.72rem;color:var(--muted);}
+.add-to-cart-btn{background:var(--brown);color:#fff;border:none;padding:0.45rem 0.85rem;border-radius:6px;font-size:0.78rem;font-weight:600;cursor:pointer;font-family:inherit;transition:background 0.2s;}
+.add-to-cart-btn:hover{background:var(--gold);color:var(--brown);}
+
+/* FOOTER */
+footer{background:var(--brown);color:rgba(255,255,255,0.6);text-align:center;padding:2rem;font-size:0.8rem;}
+footer strong{color:var(--gold-light);}
+
+/* TOAST */
+.toast{position:fixed;bottom:2rem;right:2rem;background:var(--brown);color:#fff;padding:0.85rem 1.25rem;border-radius:10px;font-size:0.85rem;font-weight:500;transform:translateY(100px);opacity:0;transition:all 0.3s;z-index:999;display:flex;align-items:center;gap:0.5rem;}
+.toast.show{transform:translateY(0);opacity:1;}
+</style>
+</head>
+<body>
+
+<nav>
+  <a class="nav-brand" href="/"><span>🍵</span> Sampurni<span>Tea</span></a>
+  <div class="nav-links">
+    <a href="/">Shop</a>
+    <a href="#">About</a>
+    <a href="#">Blog</a>
+    <a class="cart-link" href="/cart">🛒 Cart <span class="cart-badge" id="cart-count">0</span></a>
+  </div>
+</nav>
+
+<div class="hero">
+  <div class="hero-content">
+    <div class="hero-tag">🌿 Estate Direct · Farm to Cup</div>
+    <h1>India's Finest<br><em>Single Origin</em><br>Teas</h1>
+    <p>Hand-picked from the misty hills of Darjeeling, Assam and Nilgiri. No middlemen. No compromises.</p>
+    <div class="hero-btns">
+      <a class="btn-primary" href="#products">Shop Now</a>
+      <a class="btn-outline" href="#">Our Story</a>
+    </div>
+  </div>
+  <div class="hero-img">
+    <img src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=600&q=80" alt="Premium tea"/>
+  </div>
+</div>
+
+<div class="trust-bar">
+  <div class="trust-item"><span>🚚</span> Free shipping above ₹999</div>
+  <div class="trust-item"><span>🌿</span> 100% natural, no additives</div>
+  <div class="trust-item"><span>🔒</span> Secure UPI & card payments</div>
+  <div class="trust-item"><span>↩️</span> 7-day easy returns</div>
+</div>
+
+<div class="section" id="products">
+  <div class="section-header">
+    <div class="section-tag">Our Collection</div>
+    <div class="section-title">Premium Estate Teas</div>
+  </div>
+  <div class="product-grid" id="product-grid">
+    <!-- Loaded by JS -->
+  </div>
+</div>
+
+<footer>
+  &copy; 2026 <strong>Sampurni Tea Pvt Ltd</strong> · Crafted with ♥ in India
+</footer>
+
+<div class="toast" id="toast"></div>
+
+<script>
+  const cart = JSON.parse(localStorage.getItem('cart') || '[]');
+
+  function updateCartCount() {
+    const total = cart.reduce((s, i) => s + i.qty, 0);
+    document.getElementById('cart-count').textContent = total;
+  }
+
+  function fmt(p) {
+    return new Intl.NumberFormat('en-IN', { style:'currency', currency:'INR', maximumFractionDigits:0 }).format(p);
+  }
+
+  function showToast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = '✓ ' + msg;
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 2500);
+  }
+
+  function addToCart(e, product) {
+    e.preventDefault(); e.stopPropagation();
+    const existing = cart.find(i => i.id === product.id);
+    if (existing) existing.qty++;
+    else cart.push({ id: product.id, name: product.name, price: product.price, weight: product.weight, img: product.img, qty: 1 });
+    localStorage.setItem('cart', JSON.stringify(cart));
+    updateCartCount();
+    showToast(product.name + ' added to cart');
+  }
+
+  const tagClass = { Bestseller: 'gold', Rare: '', Popular: '', Organic: 'green' };
+
+  async function loadProducts() {
+    const res = await fetch('/api/products');
+    const products = await res.json();
+    const grid = document.getElementById('product-grid');
+    grid.innerHTML = products.map(p => `
+      <a class="product-card" href="/product/${p.id}">
+        <div class="product-card-img">
+          <img src="${p.img}" alt="${p.name}" loading="lazy"/>
+          <div class="product-tag ${tagClass[p.tag]||''}">${p.tag}</div>
+        </div>
+        <div class="product-card-body">
+          <div class="product-name">${p.name}</div>
+          <div class="product-subtitle">${p.subtitle}</div>
+          <div class="product-rating">
+            <span class="stars">★★★★★</span>
+            <span class="rating-count">${p.rating} (${p.reviews.toLocaleString('en-IN')})</span>
+          </div>
+          <div class="product-footer">
+            <div>
+              <div class="product-price">${fmt(p.price)}</div>
+              <div class="product-weight">${p.weight}</div>
+            </div>
+            <button class="add-to-cart-btn" onclick="addToCart(event, ${JSON.stringify(p).replace(/"/g,'&quot;')})">Add to Cart</button>
+          </div>
+        </div>
+      </a>
+    `).join('');
+  }
+
+  loadProducts();
+  updateCartCount();
+</script>
+</body>
+</html>

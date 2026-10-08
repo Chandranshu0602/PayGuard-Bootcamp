@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Order Confirmed — Sampurni Tea</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--cream:#faf7f2;--brown:#2c1810;--gold:#c8902a;--gold-light:#e8b84b;--green:#2d5a27;--border:#e8e0d4;--text:#1a1208;--muted:#8a7560;--card:#fff;}
+body{background:var(--cream);color:var(--text);font-family:'DM Sans',sans-serif;min-height:100vh;}
+nav{background:var(--brown);padding:0 3rem;height:68px;display:flex;align-items:center;}
+.nav-brand{font-family:'Playfair Display',serif;font-size:1.4rem;color:#fff;text-decoration:none;}
+.nav-brand span{color:var(--gold-light);}
+main{max-width:520px;margin:3rem auto;padding:0 1.5rem;text-align:center;}
+.success-icon{font-size:4rem;margin-bottom:1rem;animation:pop 0.5s ease;}
+@keyframes pop{from{transform:scale(0)}to{transform:scale(1)}}
+.success-title{font-family:'Playfair Display',serif;font-size:1.8rem;color:var(--green);margin-bottom:0.5rem;}
+.success-sub{color:var(--muted);font-size:0.9rem;margin-bottom:2rem;line-height:1.6;}
+.order-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:1.5rem;text-align:left;margin-bottom:1.5rem;}
+.order-row{display:flex;justify-content:space-between;font-size:0.85rem;padding:0.5rem 0;border-bottom:1px solid var(--border);}
+.order-row:last-child{border-bottom:none;}
+.order-row .label{color:var(--muted);}
+.order-row .val{font-weight:600;}
+.continue-btn{display:inline-block;padding:0.85rem 2rem;background:var(--brown);color:#fff;border-radius:8px;text-decoration:none;font-weight:700;font-size:0.9rem;margin-top:1rem;}
+</style>
+</head>
+<body>
+<nav><a class="nav-brand" href="/"><span>🍵</span> SampurniTea</a></nav>
+<main>
+  <div class="success-icon">✅</div>
+  <div class="success-title">Order Confirmed!</div>
+  <div class="success-sub">Thank you for shopping with Sampurni Tea. Your order has been placed and will be delivered in 3–5 business days.</div>
+  <div class="order-card" id="order-details"></div>
+  <a class="continue-btn" href="/">Continue Shopping</a>
+</main>
+<script>
+  const order = JSON.parse(localStorage.getItem('lastOrder') || '{}');
+  function fmt(p){ return new Intl.NumberFormat('en-IN',{style:'currency',currency:'INR',maximumFractionDigits:0}).format(p); }
+  document.getElementById('order-details').innerHTML = `
+    <div class="order-row"><span class="label">Order ID</span><span class="val">${order.orderId||'—'}</span></div>
+    <div class="order-row"><span class="label">Amount Paid</span><span class="val" style="color:var(--green)">${fmt(order.paymentAmount||0)}</span></div>
+    <div class="order-row"><span class="label">Payment</span><span class="val">UPI · ${order.upiId||'sampurni@paytm'}</span></div>
+    <div class="order-row"><span class="label">Estimated Delivery</span><span class="val">3–5 Business Days</span></div>
+  `;
+</script>
+</body>
+</html>

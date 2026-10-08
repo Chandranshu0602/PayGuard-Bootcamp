@@ -1,0 +1,659 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>PayGuard · Security Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+
+:root {
+  --bg: #080b0f;
+  --surface: #0d1117;
+  --surface2: #161b22;
+  --border: #21262d;
+  --green: #3fb950;
+  --green-dim: #1a4726;
+  --red: #f85149;
+  --red-dim: #4a1b1a;
+  --yellow: #e3b341;
+  --blue: #58a6ff;
+  --purple: #bc8cff;
+  --text: #e6edf3;
+  --muted: #8b949e;
+  --mono: 'Space Mono', monospace;
+  --sans: 'Syne', sans-serif;
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--sans);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* SCANLINE OVERLAY */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(0,0,0,0.03) 2px,
+    rgba(0,0,0,0.03) 4px
+  );
+  pointer-events: none;
+  z-index: 1000;
+}
+
+/* HEADER */
+header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.25rem 2rem;
+  border-bottom: 1px solid var(--border);
+  background: var(--surface);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.logo-icon {
+  width: 36px;
+  height: 36px;
+  background: linear-gradient(135deg, var(--red), #ff6b6b);
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+}
+
+.logo-text {
+  font-weight: 800;
+  font-size: 1.1rem;
+  letter-spacing: -0.02em;
+}
+
+.logo-sub {
+  font-family: var(--mono);
+  font-size: 0.65rem;
+  color: var(--muted);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.live-badge {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  color: var(--green);
+  letter-spacing: 0.05em;
+}
+
+.live-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--green);
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.4; transform: scale(0.7); }
+}
+
+.shop-link {
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  color: var(--muted);
+  text-decoration: none;
+  border: 1px solid var(--border);
+  padding: 0.35rem 0.75rem;
+  border-radius: 6px;
+  transition: all 0.2s;
+}
+.shop-link:hover { color: var(--text); border-color: var(--muted); }
+
+/* MAIN */
+main {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 2rem;
+  display: grid;
+  gap: 1.5rem;
+}
+
+/* STAT CARDS */
+.stats-row {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1rem;
+}
+
+.stat-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 1.5rem;
+  position: relative;
+  overflow: hidden;
+  transition: border-color 0.3s;
+}
+
+.stat-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+}
+
+.stat-card.total::before { background: var(--blue); }
+.stat-card.accepted::before { background: var(--green); }
+.stat-card.rejected::before { background: var(--red); }
+.stat-card.rate::before { background: var(--purple); }
+
+.stat-label {
+  font-family: var(--mono);
+  font-size: 0.65rem;
+  color: var(--muted);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  margin-bottom: 0.75rem;
+}
+
+.stat-value {
+  font-size: 2.8rem;
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -0.03em;
+  transition: all 0.3s;
+}
+
+.stat-card.total .stat-value { color: var(--blue); }
+.stat-card.accepted .stat-value { color: var(--green); }
+.stat-card.rejected .stat-value { color: var(--red); }
+.stat-card.rate .stat-value { color: var(--purple); }
+
+.stat-sub {
+  font-family: var(--mono);
+  font-size: 0.7rem;
+  color: var(--muted);
+  margin-top: 0.5rem;
+}
+
+/* CHART + LOG row */
+.mid-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+/* BAR CHART */
+.chart-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 1.5rem;
+}
+
+.card-title {
+  font-family: var(--mono);
+  font-size: 0.7rem;
+  color: var(--muted);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin-bottom: 1.25rem;
+}
+
+.bar-chart {
+  display: flex;
+  align-items: flex-end;
+  gap: 6px;
+  height: 120px;
+}
+
+.bar-group {
+  display: flex;
+  gap: 3px;
+  align-items: flex-end;
+  flex: 1;
+}
+
+.bar {
+  flex: 1;
+  border-radius: 3px 3px 0 0;
+  min-height: 2px;
+  transition: height 0.4s ease;
+}
+
+.bar.accepted { background: var(--green); opacity: 0.85; }
+.bar.rejected { background: var(--red); opacity: 0.85; }
+
+.chart-legend {
+  display: flex;
+  gap: 1.5rem;
+  margin-top: 0.75rem;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-family: var(--mono);
+  font-size: 0.68rem;
+  color: var(--muted);
+}
+
+.legend-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 2px;
+}
+
+/* ATTACK TYPE BREAKDOWN */
+.type-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.type-row {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.type-name {
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  color: var(--text);
+  width: 160px;
+  flex-shrink: 0;
+}
+
+.type-bar-wrap {
+  flex: 1;
+  height: 6px;
+  background: var(--surface2);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.type-bar-fill {
+  height: 100%;
+  border-radius: 3px;
+  background: var(--red);
+  transition: width 0.5s ease;
+}
+
+.type-count {
+  font-family: var(--mono);
+  font-size: 0.7rem;
+  color: var(--muted);
+  width: 28px;
+  text-align: right;
+}
+
+/* LIVE FEED */
+.feed-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 1.5rem;
+  grid-column: 1 / -1;
+}
+
+.feed-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+}
+
+.feed-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  max-height: 380px;
+  overflow-y: auto;
+  font-family: var(--mono);
+  font-size: 0.72rem;
+}
+
+.feed-list::-webkit-scrollbar { width: 4px; }
+.feed-list::-webkit-scrollbar-track { background: transparent; }
+.feed-list::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+.feed-item {
+  display: grid;
+  grid-template-columns: 140px 80px 1fr auto;
+  gap: 1rem;
+  align-items: center;
+  padding: 0.6rem 0.75rem;
+  border-radius: 6px;
+  animation: slideIn 0.35s ease;
+  transition: background 0.15s;
+}
+
+.feed-item:hover { background: var(--surface2); }
+
+@keyframes slideIn {
+  from { opacity: 0; transform: translateX(-12px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+.feed-time { color: var(--muted); font-size: 0.68rem; }
+
+.feed-badge {
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  padding: 0.15rem 0.5rem;
+  border-radius: 4px;
+  text-align: center;
+}
+
+.feed-badge.ACCEPTED { background: var(--green-dim); color: var(--green); }
+.feed-badge.REJECTED { background: var(--red-dim); color: var(--red); }
+
+.feed-type { color: var(--text); }
+.feed-detail { color: var(--muted); text-align: right; font-size: 0.68rem; }
+
+.empty-state {
+  text-align: center;
+  padding: 3rem;
+  color: var(--muted);
+  font-family: var(--mono);
+  font-size: 0.8rem;
+}
+
+.empty-state .hint {
+  margin-top: 0.5rem;
+  font-size: 0.7rem;
+  opacity: 0.6;
+}
+
+/* CLEAR BTN */
+.clear-btn {
+  font-family: var(--mono);
+  font-size: 0.65rem;
+  color: var(--muted);
+  background: none;
+  border: 1px solid var(--border);
+  padding: 0.3rem 0.6rem;
+  border-radius: 5px;
+  cursor: pointer;
+  letter-spacing: 0.05em;
+  transition: all 0.2s;
+}
+.clear-btn:hover { color: var(--red); border-color: var(--red); }
+
+/* FLICKER on new event */
+@keyframes flash-green { 0%,100%{background:var(--surface)} 30%{background:rgba(63,185,80,0.08)} }
+@keyframes flash-red { 0%,100%{background:var(--surface)} 30%{background:rgba(248,81,73,0.08)} }
+
+.stat-card.accepted.flash { animation: flash-green 0.6s ease; }
+.stat-card.rejected.flash { animation: flash-red 0.6s ease; }
+
+@media (max-width: 900px) {
+  .stats-row { grid-template-columns: 1fr 1fr; }
+  .mid-row { grid-template-columns: 1fr; }
+  .feed-item { grid-template-columns: 110px 70px 1fr; }
+  .feed-detail { display: none; }
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">
+    <div class="logo-icon">🛡</div>
+    <div>
+      <div class="logo-text">PayGuard</div>
+      <div class="logo-sub">Security Dashboard · SampurniTea</div>
+    </div>
+  </div>
+  <div class="header-right">
+    <div class="live-badge"><div class="live-dot"></div>LIVE</div>
+    <a class="shop-link" href="/" target="_blank">↗ Open Shop</a>
+  </div>
+</header>
+
+<main>
+  <!-- STAT CARDS -->
+  <div class="stats-row">
+    <div class="stat-card total">
+      <div class="stat-label">Total Requests</div>
+      <div class="stat-value" id="s-total">0</div>
+      <div class="stat-sub">all checkout attempts</div>
+    </div>
+    <div class="stat-card accepted" id="card-accepted">
+      <div class="stat-label">Accepted</div>
+      <div class="stat-value" id="s-accepted">0</div>
+      <div class="stat-sub">legitimate orders</div>
+    </div>
+    <div class="stat-card rejected" id="card-rejected">
+      <div class="stat-label">Rejected</div>
+      <div class="stat-value" id="s-rejected">0</div>
+      <div class="stat-sub">blocked attacks</div>
+    </div>
+    <div class="stat-card rate">
+      <div class="stat-label">Block Rate</div>
+      <div class="stat-value" id="s-rate">—</div>
+      <div class="stat-sub">of all attempts</div>
+    </div>
+  </div>
+
+  <!-- CHART + BREAKDOWN -->
+  <div class="mid-row">
+    <div class="chart-card">
+      <div class="card-title">// Request Timeline (last 20)</div>
+      <div class="bar-chart" id="bar-chart"></div>
+      <div class="chart-legend">
+        <div class="legend-item"><div class="legend-dot" style="background:var(--green)"></div>Accepted</div>
+        <div class="legend-item"><div class="legend-dot" style="background:var(--red)"></div>Rejected</div>
+      </div>
+    </div>
+
+    <div class="chart-card">
+      <div class="card-title">// Attack Type Breakdown</div>
+      <div class="type-list" id="type-list">
+        <div style="color:var(--muted);font-family:var(--mono);font-size:0.75rem;padding:2rem 0;text-align:center">No attacks detected yet</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- LIVE FEED -->
+  <div class="feed-card">
+    <div class="feed-header">
+      <div class="card-title" style="margin:0">// Live Request Feed</div>
+      <button class="clear-btn" onclick="clearLog()">CLEAR</button>
+    </div>
+    <div class="feed-list" id="feed-list">
+      <div class="empty-state">
+        Waiting for requests…
+        <div class="hint">Run <code style="color:var(--yellow)">PORT=4000 node attack.js</code> to see events appear</div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<script>
+let log = [];
+let chartHistory = [];
+
+function fmt(iso) {
+  const d = new Date(iso);
+  return d.toLocaleTimeString('en-IN', { hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit' });
+}
+
+function fmtAmount(n) {
+  if (!n) return '—';
+  return '₹' + (n / 100).toLocaleString('en-IN', { maximumFractionDigits: 0 });
+}
+
+function updateStats() {
+  const accepted = log.filter(e => e.result === 'ACCEPTED').length;
+  const rejected = log.filter(e => e.result === 'REJECTED').length;
+  const total = log.length;
+  const rate = total > 0 ? Math.round((rejected / total) * 100) + '%' : '—';
+
+  document.getElementById('s-total').textContent = total;
+  document.getElementById('s-accepted').textContent = accepted;
+  document.getElementById('s-rejected').textContent = rejected;
+  document.getElementById('s-rate').textContent = rate;
+}
+
+function flashCard(id) {
+  const el = document.getElementById(id);
+  el.classList.remove('flash');
+  void el.offsetWidth;
+  el.classList.add('flash');
+}
+
+function updateChart() {
+  const recent = log.slice(0, 20).reverse();
+  const max = 1;
+  const container = document.getElementById('bar-chart');
+
+  if (recent.length === 0) { container.innerHTML = ''; return; }
+
+  container.innerHTML = recent.map(e => {
+    const isAcc = e.result === 'ACCEPTED';
+    return `<div class="bar-group">
+      <div class="bar ${isAcc ? 'accepted' : 'rejected'}" style="height:${isAcc ? 100 : 60}%"></div>
+    </div>`;
+  }).join('');
+}
+
+function updateTypeBreakdown() {
+  const attacks = log.filter(e => e.result === 'REJECTED');
+  if (attacks.length === 0) {
+    document.getElementById('type-list').innerHTML = '<div style="color:var(--muted);font-family:var(--mono);font-size:0.75rem;padding:2rem 0;text-align:center">No attacks detected yet</div>';
+    return;
+  }
+
+  const counts = {};
+  attacks.forEach(e => { counts[e.type] = (counts[e.type] || 0) + 1; });
+  const maxCount = Math.max(...Object.values(counts));
+
+  const labels = {
+    TAMPERED_CART: 'TAMPERED_CART',
+    REPLAY_ATTACK: 'REPLAY_ATTACK',
+    TOTAL_MISMATCH: 'TOTAL_MISMATCH',
+    INVALID_SIG_FORMAT: 'INVALID_SIG',
+    UNKNOWN_TXN: 'UNKNOWN_TXN',
+    BAD_ITEMS: 'BAD_ITEMS',
+  };
+
+  document.getElementById('type-list').innerHTML = Object.entries(counts)
+    .sort((a,b) => b[1] - a[1])
+    .map(([type, count]) => `
+      <div class="type-row">
+        <div class="type-name">${labels[type] || type}</div>
+        <div class="type-bar-wrap">
+          <div class="type-bar-fill" style="width:${Math.round((count/maxCount)*100)}%"></div>
+        </div>
+        <div class="type-count">${count}</div>
+      </div>
+    `).join('');
+}
+
+function renderFeed() {
+  const container = document.getElementById('feed-list');
+  if (log.length === 0) {
+    container.innerHTML = `<div class="empty-state">Waiting for requests…<div class="hint">Run <code style="color:var(--yellow)">PORT=4000 node attack.js</code> to see events appear</div></div>`;
+    return;
+  }
+
+  container.innerHTML = log.map(e => {
+    const detail = e.orderId
+      ? `Order ${e.orderId} · ${fmtAmount(e.total)}`
+      : e.attempted_total
+        ? `Attempted ${fmtAmount(e.attempted_total)}`
+        : e.reason || '';
+
+    return `<div class="feed-item">
+      <div class="feed-time">${fmt(e.ts)}</div>
+      <div class="feed-badge ${e.result}">${e.result}</div>
+      <div class="feed-type">${e.type}</div>
+      <div class="feed-detail">${detail}</div>
+    </div>`;
+  }).join('');
+}
+
+function handleEvent(event) {
+  log.unshift(event);
+  if (log.length > 200) log.pop();
+
+  updateStats();
+  updateChart();
+  updateTypeBreakdown();
+  renderFeed();
+
+  if (event.result === 'ACCEPTED') flashCard('card-accepted');
+  else flashCard('card-rejected');
+}
+
+function clearLog() {
+  log = [];
+  updateStats();
+  updateChart();
+  updateTypeBreakdown();
+  renderFeed();
+}
+
+// ─── SSE CONNECTION ───────────────────────────────────────────────────────────
+function connect() {
+  const es = new EventSource('/api/dashboard/stream');
+
+  es.onmessage = (e) => {
+    const data = JSON.parse(e.data);
+
+    if (data.type === 'init') {
+      // Bulk load existing log
+      log = data.log || [];
+      updateStats();
+      updateChart();
+      updateTypeBreakdown();
+      renderFeed();
+    } else {
+      // Single new event
+      handleEvent(data);
+    }
+  };
+
+  es.onerror = () => {
+    document.querySelector('.live-dot').style.background = 'var(--yellow)';
+    setTimeout(() => {
+      document.querySelector('.live-dot').style.background = 'var(--green)';
+      connect();
+    }, 3000);
+  };
+}
+
+connect();
+</script>
+</body>
+</html>

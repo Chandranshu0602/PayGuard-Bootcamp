@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Checkout — Sampurni Tea</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--cream:#faf7f2;--brown:#2c1810;--gold:#c8902a;--gold-light:#e8b84b;--green:#2d5a27;--border:#e8e0d4;--text:#1a1208;--muted:#8a7560;--card:#fff;--red:#c0392b;}
+body{background:var(--cream);color:var(--text);font-family:'DM Sans',sans-serif;min-height:100vh;}
+nav{background:var(--brown);padding:0 3rem;height:68px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;}
+.nav-brand{font-family:'Playfair Display',serif;font-size:1.4rem;color:#fff;text-decoration:none;}
+.nav-brand span{color:var(--gold-light);}
+.nav-back{color:rgba(255,255,255,0.7);text-decoration:none;font-size:0.85rem;font-weight:500;}
+
+/* STEPS */
+.steps{background:#fff;border-bottom:1px solid var(--border);padding:1rem 3rem;display:flex;gap:2rem;align-items:center;}
+.step{display:flex;align-items:center;gap:0.5rem;font-size:0.8rem;color:var(--muted);}
+.step.active{color:var(--brown);font-weight:600;}
+.step-num{width:22px;height:22px;border-radius:50%;background:var(--border);display:flex;align-items:center;justify-content:center;font-size:0.7rem;font-weight:700;}
+.step.active .step-num{background:var(--brown);color:#fff;}
+.step-sep{color:var(--border);font-size:0.8rem;}
+
+main{max-width:1000px;margin:2rem auto;padding:0 2rem;display:grid;grid-template-columns:1fr 340px;gap:2rem;align-items:start;}
+
+.section-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:1.75rem;margin-bottom:1.25rem;}
+.section-title{font-family:'Playfair Display',serif;font-size:1.1rem;font-weight:700;margin-bottom:1.25rem;display:flex;align-items:center;gap:0.5rem;}
+
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1rem;}
+.form-group{margin-bottom:1rem;}
+.form-group.full{grid-column:1/-1;}
+label{display:block;font-size:0.78rem;font-weight:600;color:var(--muted);margin-bottom:0.35rem;letter-spacing:0.03em;}
+input,select,textarea{width:100%;padding:0.65rem 0.85rem;border:1px solid var(--border);border-radius:8px;font-family:inherit;font-size:0.88rem;background:var(--cream);color:var(--text);transition:border-color 0.2s;outline:none;}
+input:focus,select:focus,textarea:focus{border-color:var(--gold);background:#fff;}
+textarea{resize:none;height:80px;}
+
+/* PAYMENT OPTIONS */
+.payment-opts{display:grid;grid-template-columns:1fr 1fr 1fr;gap:0.75rem;margin-bottom:1rem;}
+.pay-opt{border:2px solid var(--border);border-radius:10px;padding:0.85rem;cursor:pointer;text-align:center;transition:all 0.2s;}
+.pay-opt:hover{border-color:var(--gold);}
+.pay-opt.selected{border-color:var(--brown);background:rgba(44,24,16,0.04);}
+.pay-opt-icon{font-size:1.4rem;margin-bottom:0.35rem;}
+.pay-opt-label{font-size:0.75rem;font-weight:600;color:var(--brown);}
+.pay-opt-sub{font-size:0.65rem;color:var(--muted);margin-top:0.1rem;}
+
+/* ORDER SUMMARY */
+.summary-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:1.5rem;position:sticky;top:5rem;}
+.summary-title{font-family:'Playfair Display',serif;font-size:1.05rem;font-weight:700;margin-bottom:1.25rem;}
+.summary-item{display:flex;gap:0.75rem;margin-bottom:0.85rem;align-items:center;}
+.summary-item img{width:52px;height:52px;border-radius:6px;object-fit:cover;flex-shrink:0;}
+.summary-item-name{font-size:0.82rem;font-weight:500;line-height:1.3;}
+.summary-item-sub{font-size:0.72rem;color:var(--muted);}
+.summary-item-price{font-size:0.85rem;font-weight:700;margin-left:auto;flex-shrink:0;}
+.divider{border:none;border-top:1px solid var(--border);margin:1rem 0;}
+.summary-row{display:flex;justify-content:space-between;font-size:0.83rem;margin-bottom:0.6rem;color:var(--muted);}
+.summary-row.total{font-weight:700;font-size:1rem;color:var(--text);padding-top:0.6rem;border-top:2px solid var(--border);}
+.summary-row.total .val{color:var(--green);}
+
+.place-order-btn{width:100%;padding:0.9rem;background:var(--green);color:#fff;border:none;border-radius:8px;font-family:inherit;font-size:0.95rem;font-weight:700;cursor:pointer;margin-top:1.25rem;transition:background 0.2s;}
+.place-order-btn:hover{background:#1e4a19;}
+.secure-note{display:flex;align-items:center;justify-content:center;gap:0.4rem;font-size:0.72rem;color:var(--muted);margin-top:0.75rem;}
+</style>
+</head>
+<body>
+<nav>
+  <a class="nav-brand" href="/"><span>🍵</span> SampurniTea</a>
+  <a class="nav-back" href="/cart">← Back to Cart</a>
+</nav>
+
+<div class="steps">
+  <div class="step"><div class="step-num">✓</div>Cart</div>
+  <div class="step-sep">›</div>
+  <div class="step active"><div class="step-num">2</div>Delivery & Payment</div>
+  <div class="step-sep">›</div>
+  <div class="step"><div class="step-num">3</div>Confirmation</div>
+</div>
+
+<main>
+  <div>
+    <!-- DELIVERY -->
+    <div class="section-card">
+      <div class="section-title">📦 Delivery Address</div>
+      <div class="form-row">
+        <div class="form-group"><label>First Name</label><input type="text" id="fname" placeholder="Rahul" value="Rahul"/></div>
+        <div class="form-group"><label>Last Name</label><input type="text" id="lname" placeholder="Sharma" value="Sharma"/></div>
+      </div>
+      <div class="form-group"><label>Phone Number</label><input type="tel" id="phone" placeholder="+91 98765 43210" value="+91 98765 43210"/></div>
+      <div class="form-group"><label>Email Address</label><input type="email" id="email" placeholder="rahul@gmail.com" value="rahul@gmail.com"/></div>
+      <div class="form-group"><label>Street Address</label><input type="text" id="address" placeholder="123, MG Road" value="123, MG Road"/></div>
+      <div class="form-row">
+        <div class="form-group"><label>City</label><input type="text" id="city" placeholder="Bengaluru" value="Bengaluru"/></div>
+        <div class="form-group"><label>State</label><select id="state"><option>Karnataka</option><option>Maharashtra</option><option>Tamil Nadu</option><option>Delhi</option><option>West Bengal</option></select></div>
+      </div>
+      <div class="form-group"><label>PIN Code</label><input type="text" id="pin" placeholder="560001" value="560001"/></div>
+    </div>
+
+    <!-- PAYMENT -->
+    <div class="section-card">
+      <div class="section-title">💳 Payment Method</div>
+      <div class="payment-opts">
+        <div class="pay-opt selected" onclick="selectPay(this,'upi')">
+          <div class="pay-opt-icon">📱</div>
+          <div class="pay-opt-label">UPI</div>
+          <div class="pay-opt-sub">GPay · PhonePe · Paytm</div>
+        </div>
+        <div class="pay-opt" onclick="selectPay(this,'card')">
+          <div class="pay-opt-icon">💳</div>
+          <div class="pay-opt-label">Card</div>
+          <div class="pay-opt-sub">Visa · Mastercard · RuPay</div>
+        </div>
+        <div class="pay-opt" onclick="selectPay(this,'netbanking')">
+          <div class="pay-opt-icon">🏦</div>
+          <div class="pay-opt-label">Net Banking</div>
+          <div class="pay-opt-sub">All major banks</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ORDER SUMMARY -->
+  <div class="summary-card">
+    <div class="summary-title">Order Summary</div>
+    <div id="summary-items"></div>
+    <hr class="divider"/>
+    <div class="summary-row"><span>Subtotal</span><span id="s-sub">₹0</span></div>
+    <div class="summary-row"><span>Shipping</span><span id="s-ship">₹99</span></div>
+    <div class="summary-row"><span>Discount</span><span style="color:var(--green)">−₹0</span></div>
+    <div class="summary-row total"><span>Total</span><span class="val" id="s-total">₹0</span></div>
+    <button class="place-order-btn" onclick="placeOrder()">Place Order →</button>
+    <div class="secure-note">🔒 256-bit SSL encrypted</div>
+  </div>
+</main>
+
+<script>
+  const cart = JSON.parse(localStorage.getItem('cart') || '[]');
+  let payMethod = 'upi';
+
+  function fmt(p){ return new Intl.NumberFormat('en-IN',{style:'currency',currency:'INR',maximumFractionDigits:0}).format(p); }
+
+  function selectPay(el, method) {
+    document.querySelectorAll('.pay-opt').forEach(e => e.classList.remove('selected'));
+    el.classList.add('selected');
+    payMethod = method;
+  }
+
+  function renderSummary() {
+    if (!cart.length) { window.location.href = '/cart'; return; }
+    const subtotal = cart.reduce((s,i)=>s+i.price*i.qty,0);
+    const shipping = subtotal >= 99900 ? 0 : 9900;
+    const total = subtotal + shipping;
+    document.getElementById('summary-items').innerHTML = cart.map(i=>`
+      <div class="summary-item">
+        <img src="${i.img}" alt="${i.name}"/>
+        <div><div class="summary-item-name">${i.name}</div><div class="summary-item-sub">Qty: ${i.qty} · ${i.weight}</div></div>
+        <div class="summary-item-price">${fmt(i.price*i.qty)}</div>
+      </div>`).join('');
+    document.getElementById('s-sub').textContent = fmt(subtotal);
+    document.getElementById('s-ship').textContent = shipping===0?'FREE':fmt(shipping);
+    document.getElementById('s-total').textContent = fmt(total);
+  }
+
+  async function placeOrder() {
+    const cartItems = JSON.parse(localStorage.getItem('cart') || '[]');
+    if (!cartItems.length) return;
+
+    const btn = document.querySelector('.place-order-btn');
+    btn.disabled = true;
+    btn.textContent = 'Securing order…';
+
+    const address = {
+      name: document.getElementById('fname').value + ' ' + document.getElementById('lname').value,
+      phone: document.getElementById('phone').value,
+      email: document.getElementById('email').value,
+      street: document.getElementById('address').value,
+      city: document.getElementById('city').value,
+      state: document.getElementById('state').value,
+      pin: document.getElementById('pin').value,
+    };
+
+    try {
+      // ✅ Step 1: Ask server to compute total and sign the cart
+      const cartRes = await fetch('/api/cart/create', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          items: cartItems.map(i => ({ id: i.id, qty: i.qty })),
+          currency: 'INR',
+        })
+      });
+      const { cart, signature } = await cartRes.json();
+      if (!cart || !signature) throw new Error('Could not create secure cart');
+
+      // ✅ Step 2: Submit with server-signed cart — total is tamper-proof
+      const orderRes = await fetch('/checkout', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ cart, signature, address, paymentMethod: payMethod })
+      });
+      const data = await orderRes.json();
+
+      if (data.success) {
+        localStorage.setItem('pendingOrder', JSON.stringify(data));
+        window.location.href = '/payment';
+      } else {
+        alert('Order failed: ' + (data.error || 'Unknown error'));
+        btn.disabled = false;
+        btn.textContent = 'Place Order →';
+      }
+    } catch (err) {
+      alert('Network error: ' + err.message);
+      btn.disabled = false;
+      btn.textContent = 'Place Order →';
+    }
+  }
+
+  renderSummary();
+</script>
+</body>
+</html>

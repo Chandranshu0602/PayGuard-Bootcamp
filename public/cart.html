@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Cart — Sampurni Tea</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--cream:#faf7f2;--brown:#2c1810;--gold:#c8902a;--gold-light:#e8b84b;--green:#2d5a27;--border:#e8e0d4;--text:#1a1208;--muted:#8a7560;--card:#fff;--red:#c0392b;}
+body{background:var(--cream);color:var(--text);font-family:'DM Sans',sans-serif;min-height:100vh;}
+nav{background:var(--brown);padding:0 3rem;height:68px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;}
+.nav-brand{font-family:'Playfair Display',serif;font-size:1.4rem;color:#fff;text-decoration:none;}
+.nav-brand span{color:var(--gold-light);}
+.nav-back{color:rgba(255,255,255,0.7);text-decoration:none;font-size:0.85rem;font-weight:500;}
+.nav-back:hover{color:#fff;}
+
+main{max-width:1000px;margin:2.5rem auto;padding:0 2rem;display:grid;grid-template-columns:1fr 340px;gap:2rem;align-items:start;}
+
+.page-title{font-family:'Playfair Display',serif;font-size:1.8rem;color:var(--brown);margin-bottom:1.5rem;}
+
+/* CART ITEMS */
+.cart-card{background:var(--card);border:1px solid var(--border);border-radius:14px;overflow:hidden;}
+.cart-item{display:grid;grid-template-columns:80px 1fr auto;gap:1rem;padding:1.25rem 1.5rem;border-bottom:1px solid var(--border);align-items:center;}
+.cart-item:last-child{border-bottom:none;}
+.item-img{width:80px;height:80px;border-radius:8px;object-fit:cover;}
+.item-name{font-family:'Playfair Display',serif;font-weight:600;font-size:0.95rem;margin-bottom:0.2rem;}
+.item-weight{font-size:0.75rem;color:var(--muted);margin-bottom:0.6rem;}
+.qty-ctrl{display:flex;align-items:center;gap:0.5rem;}
+.qty-btn{width:26px;height:26px;border:1px solid var(--border);background:var(--cream);border-radius:5px;cursor:pointer;font-size:0.9rem;display:flex;align-items:center;justify-content:center;}
+.qty-num{font-weight:600;min-width:20px;text-align:center;font-size:0.9rem;}
+.item-price-col{text-align:right;}
+.item-price{font-size:1rem;font-weight:700;color:var(--brown);}
+.remove-btn{font-size:0.72rem;color:var(--red);cursor:pointer;margin-top:0.4rem;background:none;border:none;font-family:inherit;}
+.empty-cart{padding:3rem;text-align:center;color:var(--muted);}
+.empty-cart-icon{font-size:3rem;margin-bottom:1rem;opacity:0.4;}
+.empty-cart a{color:var(--gold);text-decoration:none;font-weight:600;}
+
+/* ORDER SUMMARY */
+.summary-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:1.5rem;position:sticky;top:5rem;}
+.summary-title{font-family:'Playfair Display',serif;font-size:1.1rem;font-weight:700;margin-bottom:1.25rem;}
+.summary-row{display:flex;justify-content:space-between;font-size:0.85rem;margin-bottom:0.75rem;}
+.summary-row.total{font-weight:700;font-size:1rem;padding-top:0.75rem;border-top:2px solid var(--border);margin-top:0.25rem;}
+.summary-row.total .val{color:var(--green);font-size:1.1rem;}
+.free-ship{font-size:0.72rem;color:var(--green);font-weight:500;margin-top:-0.4rem;margin-bottom:0.75rem;}
+.checkout-btn{width:100%;padding:0.85rem;background:var(--brown);color:#fff;border:none;border-radius:8px;font-family:inherit;font-size:0.95rem;font-weight:700;cursor:pointer;margin-top:1rem;transition:background 0.2s;}
+.checkout-btn:hover{background:#4a2c1a;}
+.secure-note{display:flex;align-items:center;justify-content:center;gap:0.4rem;font-size:0.72rem;color:var(--muted);margin-top:0.75rem;}
+.coupon-row{display:flex;gap:0.5rem;margin-bottom:1rem;}
+.coupon-input{flex:1;padding:0.5rem 0.75rem;border:1px solid var(--border);border-radius:6px;font-family:inherit;font-size:0.82rem;background:var(--cream);}
+.coupon-btn{padding:0.5rem 0.85rem;background:var(--cream);border:1px solid var(--border);border-radius:6px;font-family:inherit;font-size:0.8rem;font-weight:600;cursor:pointer;}
+</style>
+</head>
+<body>
+<nav>
+  <a class="nav-brand" href="/"><span>🍵</span> SampurniTea</a>
+  <a class="nav-back" href="/">← Continue Shopping</a>
+</nav>
+
+<main>
+  <div>
+    <div class="page-title">Shopping Cart</div>
+    <div class="cart-card" id="cart-container">
+      <div class="empty-cart">
+        <div class="empty-cart-icon">🛒</div>
+        <div>Your cart is empty. <a href="/">Start shopping</a></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="summary-card">
+    <div class="summary-title">Order Summary</div>
+    <div class="coupon-row">
+      <input class="coupon-input" placeholder="Coupon code" type="text"/>
+      <button class="coupon-btn">Apply</button>
+    </div>
+    <div class="summary-row"><span>Subtotal</span><span id="subtotal">₹0</span></div>
+    <div class="summary-row"><span>Shipping</span><span id="shipping">₹99</span></div>
+    <div class="free-ship" id="free-ship-note"></div>
+    <div class="summary-row total"><span>Total</span><span class="val" id="total">₹0</span></div>
+    <button class="checkout-btn" onclick="goCheckout()">Proceed to Checkout →</button>
+    <div class="secure-note">🔒 Secure checkout · UPI · Cards · NetBanking</div>
+  </div>
+</main>
+
+<script>
+  let cart = JSON.parse(localStorage.getItem('cart') || '[]');
+
+  function fmt(p) {
+    return new Intl.NumberFormat('en-IN', {style:'currency',currency:'INR',maximumFractionDigits:0}).format(p);
+  }
+
+  function save() { localStorage.setItem('cart', JSON.stringify(cart)); render(); }
+
+  function changeQty(id, d) {
+    const item = cart.find(i => i.id === id);
+    if (!item) return;
+    item.qty = Math.max(1, item.qty + d);
+    save();
+  }
+
+  function remove(id) {
+    cart = cart.filter(i => i.id !== id);
+    save();
+  }
+
+  function render() {
+    const container = document.getElementById('cart-container');
+    if (!cart.length) {
+      container.innerHTML = `<div class="empty-cart"><div class="empty-cart-icon">🛒</div><div>Your cart is empty. <a href="/">Start shopping</a></div></div>`;
+      document.getElementById('subtotal').textContent = '₹0';
+      document.getElementById('shipping').textContent = '₹99';
+      document.getElementById('total').textContent = '₹99';
+      document.getElementById('free-ship-note').textContent = '';
+      return;
+    }
+
+    const subtotal = cart.reduce((s, i) => s + i.price * i.qty, 0);
+    const shipping = subtotal >= 99900 ? 0 : 9900;
+    const total = subtotal + shipping;
+
+    container.innerHTML = cart.map(item => `
+      <div class="cart-item">
+        <img class="item-img" src="${item.img}" alt="${item.name}"/>
+        <div>
+          <div class="item-name">${item.name}</div>
+          <div class="item-weight">${item.weight}</div>
+          <div class="qty-ctrl">
+            <button class="qty-btn" onclick="changeQty('${item.id}',-1)">−</button>
+            <div class="qty-num">${item.qty}</div>
+            <button class="qty-btn" onclick="changeQty('${item.id}',1)">+</button>
+          </div>
+        </div>
+        <div class="item-price-col">
+          <div class="item-price">${fmt(item.price * item.qty)}</div>
+          <button class="remove-btn" onclick="remove('${item.id}')">Remove</button>
+        </div>
+      </div>
+    `).join('');
+
+    document.getElementById('subtotal').textContent = fmt(subtotal);
+    document.getElementById('shipping').textContent = shipping === 0 ? 'FREE' : fmt(shipping);
+    document.getElementById('total').textContent = fmt(total);
+    document.getElementById('free-ship-note').textContent = shipping > 0 ? `Add ${fmt(99900 - subtotal)} more for free shipping` : '🎉 You get free shipping!';
+  }
+
+  function goCheckout() {
+    if (!cart.length) return alert('Your cart is empty!');
+    window.location.href = '/checkout';
+  }
+
+  render();
+</script>
+</body>
+</html>
